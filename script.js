@@ -16,8 +16,7 @@ if (saved) {
 
 
 const table = document.getElementById('table_id');
-const tbody = table.querySelector('tbody');
-console.log(tbody);
+const tbody = document.getElementById('tbody_id');
 
 function fillRow(row, data_itm, i) {
   row.insertCell(0).innerHTML = (data_itm.hasOwnProperty('color')) ? "<div class=\"color\" style=\"background: " + `${data_itm.color}` + ";\">" : "";
@@ -91,7 +90,7 @@ btnM.onclick = function() {
     type: `${type}`,
     color: `${color}`
   }
-  var row = (edit) ? tbody.rows[currenti] : tbody.insertRow();
+  var row = (edit) ? tbody.rows[rowPosbyID(currenti)] : tbody.insertRow();
   if (edit) {
     data[currenti] = {
       ...data[currenti],
@@ -99,9 +98,17 @@ btnM.onclick = function() {
     };
     updateRow(row, data[currenti]);
     edit = false;
+
   } else {
     data.push(newData)
     fillRow(row, data[data.length - 1], data.length - 1);
+  }
+}
+
+function rowPosbyID(currenti) {
+  for (let i in tbody.rows) {
+    let row = tbody.rows[i];
+    if (row.cells[3].innerHTML == currenti) return row.rowIndex - 1
   }
 }
 
@@ -144,41 +151,41 @@ window.onload = function() {
 
 //----edit
 
-let pencils = document.querySelectorAll('.fa-pencil');
+
 let edit = false;
 
 function activatePencil(pencil) {
   pencil.addEventListener('click', function(e) {
     var row = e.target.parentNode.parentNode;
-    var rowIndex = row.rowIndex;
-    currenti = rowIndex - 1;
+    currenti = row.cells[3].innerHTML;
     color = data[currenti].color;
     document.getElementById('modal-header').innerText = "Изменение цвета"
     document.getElementById('name').value = data[currenti].name;
     let select = document.getElementById('type');
     select.value = data[currenti].type;
     document.getElementById('create-btn-modal').innerText = "Изменить"
-    console.log(currenti, data[currenti]);
-    console.log(select.value);
     picker.destroy();
     initPicker({
       color: color
     });
     edit = true;
     modal.style.display = "flex";
-  })
+  });
 };
 
-pencils.forEach(pencil => {
-  activatePencil(pencil);
-});
+function activatePencils() {
+  let pencils = document.querySelectorAll('.fa-pencil');
+  pencils.forEach(activatePencil);
+};
+
+
+activatePencils();
+
 
 function activateTrashbins(trashbin) {
   trashbin.addEventListener('click', function(e) {
     var row = e.target.parentNode.parentNode;
-    console.log(e);
     var rowIndex = row.rowIndex;
-    console.log(rowIndex);
     tbody.deleteRow(rowIndex - 1);
     currenti = rowIndex - 1;
     data.splice(currenti, 1);
