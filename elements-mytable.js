@@ -8,7 +8,6 @@ export class MyTable extends CustomElement {
     // Reflect the value of the open property as an HTML attribute.
     if (val) {
       this.setAttribute('data-set', JSON.stringify(val));
-      this._data = val;
     } else {
       this.removeAttribute('data-set');
     }
@@ -22,7 +21,27 @@ export class MyTable extends CustomElement {
 
   constructor() {
     super();
-    this._data = [];
+    let data = [];
+    let saved = window.localStorage.getItem('data');
+    if (saved) {
+      data = JSON.parse(saved);
+    } else {
+      data = [{
+        name: "name1",
+        type: "main",
+        color: "#581f1f",
+      }, {
+        name: "name2",
+        type: "side",
+        color: "#10ef40",
+      }];
+    };
+    this.setData = data;
+    this.state = {
+      data: data,
+      editing: false
+    };
+
     let template = document.getElementById('table_template');
     let templateContent = template.content;
     const shadow = this.attachShadow({
@@ -30,8 +49,6 @@ export class MyTable extends CustomElement {
     });
 
     shadow.appendChild(templateContent.cloneNode(true));
-
-    this._tbody = shadow.querySelector('tbody');
 
     this.appendChild(document.getElementById('create-btn'));
 
@@ -43,28 +60,57 @@ export class MyTable extends CustomElement {
     faLink.setAttribute('rel', 'stylesheet');
     faLink.setAttribute('href', 'fonts/font-awesome-4.7.0/css/font-awesome.min.css');
 
-    // Apply external scripts to the shadow dom
-
-
     // Attach the created elements to the shadow dom
     shadow.appendChild(styleLink);
     shadow.appendChild(faLink);
 
     // Run drag-and-drop script
     dndScript(shadow);
+
+    // tbody
+    this._tbody = shadow.querySelector('tbody');
   }
 
   render() { // (1)
-    this._data = this.getData;
-    this._data.map((colorData, i) => {
-      let row = document.createElement('tr');
-      this.fillRow(row, colorData, i);
-      this._tbody.appendChild(row);
-    });
+    const myModal = document.querySelector('my-modal');
+    const myTable = document.querySelector('my-table');
+    const rowCount = this._tbody.rows.length;
+
+    if (rowCount) { // если не пустая таблица
+      if (this.state.editing) { // если редактируется
+        let colorData = myTable.state.data.find(el => el.colorid === myModal.state.colorid);
+        let row = this._tbody.rows[myModal.state.colorrow - 1];
+        row.cells[1].innerText = colorData.name;
+        row.cells[2].innerText = colorData.type;
+        row.cells[0].querySelector('div').style.background = colorData.color;
+        row.cells[3].innerText = colorData.colorid;
+        console.log(row);
+        this.state.editing = false;
+      }
+
+
+      this.state.data = this.getData;
+
+      if (this.state.data.length > this._tbody.rows.length) { // если добавление элемента
+        this.newRow(this._tbody, this.state.data[this.state.data.length - 1], this.state.data.length - 1)
+      };
+    } else { //если таблица пустая - загружаются значения по умолчанию и присваиваются colorid
+      this.state.data.forEach((item, i) => {
+        Object.assign(item, {
+          colorid: i
+        })
+      });
+
+      this.state.data.map((color) => {
+
+        this.newRow(this._tbody, color, color.colorid)
+      });
+    }
+
   };
 
   connectedCallback() { // (2)
-    if ((!this.rendered) && (this._data.length)) {
+    if (!this.rendered) {
       this.render();
       this.rendered = true;
     }
@@ -76,10 +122,11 @@ export class MyTable extends CustomElement {
 
   attributeChangedCallback(name, oldValue, newValue) { // (4)
     this.render();
+    window.localStorage.setItem('data', JSON.stringify(this.getData))
   }
 
 
-
+  //  --------------------------------------- useful fuctions---------------------------------------------------------
 
   fillRow(row, data_itm, i) {
     row.insertCell(0).innerHTML = (data_itm.hasOwnProperty('color')) ? "<div class=\"color\" style=\"background: " + `${data_itm.color}` + ";\">" : "";
@@ -94,58 +141,74 @@ export class MyTable extends CustomElement {
     this.activateTrashbins(trashbin);
   }
 
-  updateRow(row, data) {
-    row.cells[0].innerHTML = (data.hasOwnProperty('color')) ? "<div class=\"color\" style=\"background: " + `${data.color}` + ";\">" : "";
-    row.cells[1].textContent = (data.hasOwnProperty('name')) ? `${data.name}` : "";
-    row.cells[2].innerText = (data.hasOwnProperty('type')) ? `${data.type.toLowerCase()}` : "";
+  newRow(tbody, color, i) {
+    let row = document.createElement('tr');
+    this.fillRow(row, color, i);
+    tbody.appendChild(row);
   }
 
+  // updateRow(row, data) {
+  //   row.cells[0].innerHTML = (data.hasOwnProperty('color')) ? "<div class=\"color\" style=\"background: " + `${data.color}` + ";\">" : "";
+  //   row.cells[1].textContent = (data.hasOwnProperty('name')) ? `${data.name}` : "";
+  //   row.cells[2].innerText = (data.hasOwnProperty('type')) ? `${data.type.toLowerCase()}` : "";
+  // }
+  //
 
-  // filling the table
-  drawTable() {
-    for (var i = 0; i < data.length; i++) {
-      var row = tbody.insertRow(i);
-      fillRow(row, data[i], i);
-    };
-  };
-
-  rowPosbyID(currenti) {
-    for (let i in tbody.rows) {
-      let row = tbody.rows[i];
-      if (row.cells[3].innerHTML == currenti) return row.rowIndex - 1
-    }
-  }
+  // // filling the table
+  // drawTable() {
+  //   for (var i = 0; i < data.length; i++) {
+  //     var row = tbody.insertRow(i);
+  //     fillRow(row, data[i], i);
+  //   };
+  // };
+  //
+  // rowPosbyID(currenti) {
+  //   for (let i in tbody.rows) {
+  //     let row = tbody.rows[i];
+  //     if (row.cells[3].innerHTML == currenti) return row.rowIndex - 1
+  //   }
+  // }
 
   activatePencil(pencil) {
     pencil.addEventListener('click', function(e) {
       var row = e.target.parentNode.parentNode;
-      var i = +row.cells[3].innerHTML;
-      // let data = JSON.parse((e.path.find((el) => el.tagName == 'MY-TABLE')).getAttribute('data-set'));
-      // let color = data[i].color;
-      // document.getElementById('modal-header').innerText = "Изменение цвета";
-      // document.getElementById('name').value = data[i].name;
-      // let select = document.getElementById('type');
-      // select.value = data[i].type;
-      // document.getElementById('create-btn-modal').innerText = "Изменить"
 
-      document.querySelector('my-modal').setState({
-        colorid: i,
+      const myModal = document.querySelector('my-modal')
+      const myTable = document.querySelector('my-table')
+      myModal.setState({
+        color: myTable.state.data[+row.cells[3].innerText].color,
+        colorname: row.cells[1].innerText,
+        colorid: +row.cells[3].innerText,
+        colorrow: row.rowIndex,
         edit: true
       })
-      document.querySelector('my-modal').show()
-      console.log(document.querySelector('my-modal').state);
-
+      myModal.setData = {
+        edit: 'true',
+      };
+      myModal.show();
     })
   };
 
   activateTrashbins(trashbin) {
     trashbin.addEventListener('click', function(e) {
+      const myTable = document.querySelector('my-table');
       var row = e.target.parentNode.parentNode;
-      console.log(e);
       var rowIndex = row.rowIndex;
-      tbody.deleteRow(rowIndex - 1);
-      currenti = rowIndex - 1;
-      data.splice(currenti, 1);
+      myTable.select('tbody').deleteRow(rowIndex - 1);
+      const i = +row.cells[3].innerText;
+      myTable.state.data.splice(i, 1);
+      myTable.setData = myTable.state.data;
     });
   };
+
+
+
+  convertRGBtoHex(red, green, blue) {
+    function colorToHex(color) {
+      var hexadecimal = color.toString(16);
+      return hexadecimal.length == 1 ? "0" + hexadecimal : hexadecimal;
+    }
+
+    return "#" + colorToHex(red) + colorToHex(green) + colorToHex(blue);
+  }
 };

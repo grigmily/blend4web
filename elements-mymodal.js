@@ -8,25 +8,32 @@ export class MyModal extends CustomElement {
     // Reflect the value of the open property as an HTML attribute.
     if (val) {
       this.setAttribute('data-set', JSON.stringify(val));
-      this._data = val;
     } else {
       this.removeAttribute('data-set');
     }
 
   }
+
   get getData() {
-    return document.querySelector('my-table');
-    // return JSON.parse(this.getAttribute('data-set'));
+
+    return JSON.parse(this.getAttribute('data-set'));
   };
 
   constructor() {
     super();
+
+    this.state = {
+      edit: false,
+      colorname: ''
+    }
 
     let template = document.getElementById('modal_template');
     let templateContent = template.content;
     const shadow = this.attachShadow({
       mode: 'open'
     });
+
+
 
     shadow.appendChild(templateContent.cloneNode(true));
 
@@ -38,19 +45,14 @@ export class MyModal extends CustomElement {
     styleLink.setAttribute('rel', 'stylesheet');
     styleLink.setAttribute('href', 'style-modal.css');
 
-
-    // Apply external scripts to the shadow dom
-
-
     // Attach the created elements to the shadow dom
     shadow.appendChild(styleLink);
 
 
-    const table = document.querySelector('my-table');
 
 
-    // Get the modal
-    var modal = shadow.getElementById("modal_id");
+    const myTable = document.querySelector('my-table');
+    const myModal = document.querySelector('my-modal');
 
     // Get the button that opens the modal
     var btn = document.getElementById('create-btn');
@@ -60,53 +62,101 @@ export class MyModal extends CustomElement {
 
     // When the user clicks on the button, open the modal
     btn.onclick = function() {
-      this.show();
-      shadow.getElementById('modal-header').innerText = "Добавить цвет"
-      shadow.getElementById('create-btn-modal').innerText = "Добавить";
-      shadow.getElementById('name').value = '';
+      myModal.show();
+      myModal.state.colorid = myTable.state.data.length;
+      myModal.setData = {
+        edit: false
+      }
     }
 
     // When the user clicks on <span> (x), close the modal
     span.onclick = function() {
-      this.hide();
+      myModal.hide();
     }
 
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
+      console.log();
+      if (event.path[0] == shadow.getElementById("modal_id")) {
+        myModal.hide();
       }
     }
 
-    // -- add color
+    // --  add color
 
     var btnM = shadow.getElementById("create-btn-modal");
-    // var currenti = data.length - 1;
-    btnM.onclick = function() {
+
+    btnM.onclick = async function() { // сохранение-изменение цвета
       let name = shadow.getElementById('name').value;
       let select = shadow.getElementById('type');
       let type = select.options[select.selectedIndex].value;
-      modal.style.display = "none";
 
-      let newData = {
-        name: `${name}`,
-        type: `${type}`,
-        color: `${color}`
-      }
-
-      // var row = (this.state.edit) ? tbody.rows[currenti] : tbody.insertRow();
-      if (this.state.edit) {
-        table._data[this.state.colorid] = {
-          ...table._data[this.state.colorid],
+      function updateStateColor(newData) {
+        myTable.state.data[myModal.state.colorid] = {
+          ...myTable.state.data[myModal.state.colorid],
           ...newData
         };
-        table.setData(table._data);
-        this.state.edit = false;
-      } else {
-        table.setData(table._data.push(newData));
+        myTable.state.editing = true;
+        myModal.state.edit = false;
+      }
+
+
+      myModal.hide();
+
+      let newData = { // новый цвет
+        name: `${name}`,
+        type: `${type}`,
+        color: `${myModal.state.color}`,
+        colorid: myModal.state.colorid
+      }
+
+
+
+      if (myModal.state.edit) { //если редактировать
+        await updateStateColor(newData);
+        myTable.setData = myTable.state.data;
+
+        myModal.setData = {
+          edit: false
+        };
+      } else { //если добавить
+        myTable.state.data.push(newData);
+        myTable.setData = myTable.state.data
       }
     }
 
+    //переменные для рендера
 
+    this.header = shadow.getElementById('modal-header');
+    this.okbtn = shadow.getElementById('create-btn-modal');
+    this.namearea = shadow.getElementById('name');
   }
+
+
+
+  render() { // (1)
+    this.header.innerText = this.state.edit ? "Изменить цвет" : "Добавить цвет";
+    this.okbtn.innerText = this.state.edit ? "Изменить" : "Добавить";
+    this.namearea.value = this.state.edit ? this.state.colorname : '';
+
+  };
+
+  connectedCallback() { // (2)
+    if (!this.rendered) {
+      this.render();
+      this.rendered = true;
+    }
+  }
+
+  static get observedAttributes() { // (3)
+    return ['data-set'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) { // (4)
+    this.render();
+  }
+
+
+
+
 }
