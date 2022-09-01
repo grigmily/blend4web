@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Таблица цветов - тестовое задание</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://raw.githack.com/easylogic/colorpicker/main/dist/EasyLogicColorPicker.css" />
+</head>
+
+<body>
+  <header>
+    <div class="header-div">
+      <div class="">
+
+      </div>
+      <h1> Таблица цветов</h1>
+      <div class="buttons-window-control">
+        <button type="button" name="save" class="control-button"><i class="fa  fa-save"></i></button>
+        <button type="button" name="close" class="control-button"><i class="fa   fa-close"></i></button>
+      </div>
+
+    </div>
+  </header>
+  <main>
+
+    <my-table>
+    </my-table>
+
+    <my-modal>
+    </my-modal>
+
+
+    <template id="table_template">
+      <table class="draggable-table" id="table_id">
+        <thead>
+          <tr>
+            <th>Цвет</th>
+            <th>Название</th>
+            <th>Тип</th>
+            <th>Код</th>
+            <th>Изменить</th>
+            <th>Удалить</th>
+          </tr>
+        </thead>
+        <tbody id="tbody_id">
+
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="6">
+              <div class="tfoot-div">
+
+                <slot name="create-button-slot"></slot>
+
+              </div>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </template>
+    <button slot="create-button-slot" type="button" id="create-btn" name="create" class="create-button">Добавить цвет</button>
+
+    <template id="modal_template">
+      <!-- The Modal -->
+      <div id="modal_id" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h3 id="modal-header">Добавление цвета</h3>
+          <label for="name">Название</label>
+          <input name="name" id="name" />
+          <label for="type">Выберите тип:</label>
+          <select name="type" id="type">
+            <option value="main">Main</option>
+            <option value="side">Side</option>
+            <option value="primary">Primary</option>
+            <option value="secondary">Secondary</option>
+            <option value="base">Base</option>
+          </select>
+          <div class="wrap">
+            <div class="body">
+
+
+
+              <slot name="color-picker-slot"></slot>
+
+
+              <p class="sample">
+                <i class="sample__color"></i>
+                <em class="sample__code"></em>
+              </p>
+
+            </div>
+            <button type="button" id="create-btn-modal" name="create" class="create-button modal-button">Добавить цвет</button>
+          </div>
+
+        </div>
+      </div>
+    </template>
+    <div slot="color-picker-slot" id="color-picker"></div>
+
+
+  </main>
+
+</body>
+<script src="https://raw.githack.com/easylogic/colorpicker/main/dist/EasyLogicColorPicker.js"></script>
+<script src="./script.js" type="module"></script>
+
+
+
+
+</html>
