@@ -23,6 +23,7 @@
     width: 20%; /* Could be more or less, depending on screen size */
     height: 600px;
     flex-direction: column;
+    border-radius: 20px;
 }
 .modal-content h3
 {
