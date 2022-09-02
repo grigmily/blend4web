@@ -14,18 +14,6 @@ const createBtn = document.getElementById('create-btn'); // кнопка доб�
 
 const editBtns = myTable.selectAll('.fa-pencil'); // кнопки  редактировать
 
-editBtns.forEach((editBtn) => {
-  editBtn.addEventListener('click', async function() {
-    await updateColor(myTable.state.data[myModal.state.colorid].color);
-    callPicker({
-      color: myModal.state.color
-    })
-
-  })
-})
-
-
-
 
 // ----------------------------------------  color_picker --------------------------------------------------------
 
@@ -41,17 +29,6 @@ const defaults = {
   },
   swatchColors: ['#D1BF91', '#60371E', '#A6341B', '#F9C743', '#C7C8C4'],
 };
-
-function callPicker(opts = null) {
-  if (picker) {
-    picker.setColor(opts.color)
-  } else {
-    initPicker(opts);
-    picker.$el.setAttribute('slot', 'color-picker-slot');
-    myModal.appendChild(picker.$el);
-  }
-}
-
 
 
 function initPicker(options) {
@@ -73,6 +50,20 @@ function updateColor(value) {
   // $code.innerText = value;
   // $color.style.setProperty('--color', color);
 }
+
+
+function callPicker(opts = null) {
+  if (picker) {
+    picker.setColor(opts.color)
+  } else {
+    initPicker(opts);
+    picker.$el.setAttribute('slot', 'color-picker-slot');
+    myModal.appendChild(picker.$el);
+  }
+}
+
+
+
 
 
 //-------------------------------------------- addEventListener -----------------

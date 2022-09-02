@@ -88,13 +88,12 @@ export class MyTable extends CustomElement {
         this.state.editing = false;
       }
 
-
       this.state.data = this.getData;
 
       if (this.state.data.length > this._tbody.rows.length) { // если добавление элемента
         this.newRow(this._tbody, this.state.data[this.state.data.length - 1], this.state.data.length - 1)
       };
-    } else { //если таблица пустая - загружаются значения по умолчанию и присваиваются colorid
+    } else { //если таблица пустая - присваиваются colorid и загружаются значения по умолчанию
       this.state.data.forEach((item, i) => {
         Object.assign(item, {
           colorid: i
@@ -102,7 +101,6 @@ export class MyTable extends CustomElement {
       });
 
       this.state.data.map((color) => {
-
         this.newRow(this._tbody, color, color.colorid)
       });
     }
@@ -147,28 +145,6 @@ export class MyTable extends CustomElement {
     tbody.appendChild(row);
   }
 
-  // updateRow(row, data) {
-  //   row.cells[0].innerHTML = (data.hasOwnProperty('color')) ? "<div class=\"color\" style=\"background: " + `${data.color}` + ";\">" : "";
-  //   row.cells[1].textContent = (data.hasOwnProperty('name')) ? `${data.name}` : "";
-  //   row.cells[2].innerText = (data.hasOwnProperty('type')) ? `${data.type.toLowerCase()}` : "";
-  // }
-  //
-
-  // // filling the table
-  // drawTable() {
-  //   for (var i = 0; i < data.length; i++) {
-  //     var row = tbody.insertRow(i);
-  //     fillRow(row, data[i], i);
-  //   };
-  // };
-  //
-  // rowPosbyID(currenti) {
-  //   for (let i in tbody.rows) {
-  //     let row = tbody.rows[i];
-  //     if (row.cells[3].innerHTML == currenti) return row.rowIndex - 1
-  //   }
-  // }
-
   activatePencil(pencil) {
     pencil.addEventListener('click', function(e) {
       var row = e.target.parentNode.parentNode;
@@ -194,9 +170,9 @@ export class MyTable extends CustomElement {
       const myTable = document.querySelector('my-table');
       var row = e.target.parentNode.parentNode;
       var rowIndex = row.rowIndex;
-      myTable.select('tbody').deleteRow(rowIndex - 1);
       const i = +row.cells[3].innerText;
       myTable.state.data.splice(i, 1);
+      myTable.select('tbody').deleteRow(rowIndex - 1);
       myTable.setData = myTable.state.data;
     });
   };

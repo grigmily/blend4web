@@ -115,7 +115,6 @@ export class MyModal extends CustomElement {
       if (myModal.state.edit) { //если редактировать
         await updateStateColor(newData);
         myTable.setData = myTable.state.data;
-
         myModal.setData = {
           edit: false
         };
@@ -155,8 +154,4 @@ export class MyModal extends CustomElement {
   attributeChangedCallback(name, oldValue, newValue) { // (4)
     this.render();
   }
-
-
-
-
 }
