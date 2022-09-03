@@ -6,7 +6,7 @@
   <title>Таблица цветов - тестовое задание</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://raw.githack.com/easylogic/colorpicker/main/dist/EasyLogicColorPicker.css" />
+  <link rel="stylesheet" href="style-colorpicker.css" />
 </head>
 
 <body>
@@ -39,6 +39,7 @@
             <th>Цвет</th>
             <th>Название</th>
             <th>Тип</th>
+            <th>id (system)</th>
             <th>Код</th>
             <th>Изменить</th>
             <th>Удалить</th>
@@ -70,16 +71,22 @@
         <div class="modal-content">
           <span class="close">&times;</span>
           <h3 id="modal-header">Добавление цвета</h3>
-          <label for="name">Название</label>
-          <input name="name" id="name" />
-          <label for="type">Выберите тип:</label>
-          <select name="type" id="type">
-            <option value="main">Main</option>
-            <option value="side">Side</option>
-            <option value="primary">Primary</option>
-            <option value="secondary">Secondary</option>
-            <option value="base">Base</option>
-          </select>
+          <div class="modal-options">
+            <div class="modal-option">
+              <label for="name">Название:</label>
+              <input name="name" id="name" />
+            </div>
+            <div class="modal-option">
+              <label for="type">Выберите тип:</label>
+              <select name="type" id="type">
+                <option value="main">Main</option>
+                <option value="side">Side</option>
+                <option value="primary">Primary</option>
+                <option value="secondary">Secondary</option>
+                <option value="base">Base</option>
+              </select>
+            </div>
+          </div>
           <div class="wrap">
             <div class="picker-body">
 

@@ -60,9 +60,12 @@ export class MyTable extends CustomElement {
     faLink.setAttribute('rel', 'stylesheet');
     faLink.setAttribute('href', 'fonts/font-awesome-4.7.0/css/font-awesome.min.css');
 
+
+
     // Attach the created elements to the shadow dom
     shadow.appendChild(styleLink);
     shadow.appendChild(faLink);
+
 
     // Run drag-and-drop script
     dndScript(shadow);
@@ -130,9 +133,10 @@ export class MyTable extends CustomElement {
     row.insertCell(0).innerHTML = (data_itm.hasOwnProperty('color')) ? "<div class=\"color\" style=\"background: " + `${data_itm.color}` + ";\">" : "";
     row.insertCell(1).textContent = (data_itm.hasOwnProperty('name')) ? `${data_itm.name}` : "";
     row.insertCell(2).innerText = (data_itm.hasOwnProperty('type')) ? `${data_itm.type.toLowerCase()}` : "";
-    row.insertCell(3).textContent = `${i}`;
-    row.insertCell(4).innerHTML = "<i class=\"fa fa-pencil\"></i>";
-    row.insertCell(5).innerHTML = "<i class=\"fa fa-trash\"></i>";
+    row.insertCell(3).textContent = `${i}`
+    row.insertCell(4).textContent = `${data_itm.color}`;
+    row.insertCell(5).innerHTML = "<i class=\"fa fa-pencil\"></i>";
+    row.insertCell(6).innerHTML = "<i class=\"fa fa-trash\"></i>";
     let pencil = row.querySelector('.fa-pencil');
     this.activatePencil(pencil);
     let trashbin = row.querySelector('.fa-trash');

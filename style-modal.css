@@ -20,26 +20,44 @@
     margin: 2% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
-    width: 20%; /* Could be more or less, depending on screen size */
-    height: 600px;
+    width: 320px; /* Could be more or less, depending on screen size */
+    height: 645px;
     flex-direction: column;
     border-radius: 20px;
+    box-sizing: border-box;
 }
 .modal-content h3
 {
     text-align: center;
 }
 
+.modal-options
+{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 14px;
+}
+.modal-option
+{
+    display: flex;
+    justify-content: space-between;
+}
+
+
 .modal-content label
 {
     color: var(--fourth-text-color);
     line-height: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    align-self: center;
 }
 
 .modal-content input
 {
     height: 20px;
     margin-block: 8px;
+    box-sizing: border-box;
 }
 .modal-content  select
 {
@@ -53,6 +71,10 @@
     stroke: solid 2px var(--secondary-bg-color);
     padding: 8px;
     color: var(--fifth-text-color);
+    border: 1px solid var(--stroke);
+    width: 175px;
+    height: 40px;
+    margin-right: 5px;
 }
 
 .modal-content input:focus,
@@ -61,8 +83,7 @@
     color: var(--fifth-text-color);
 }
 
-input,
-select,
+
 textarea
 {
     color: var(--fifth-text-color);
@@ -74,10 +95,7 @@ input:focus
     color: var(--fifth-text-color);
 }
 
-select#type
-{
-    margin-inline-start: 50px;
-}
+
 /* The Close Button */
 .close
 {
@@ -107,9 +125,9 @@ select#type
 
 .modal-button
 {
+    width: 256px;
     background: var(--button-color);
     position: absolute;
-
     left: 50%;
     transform: translateX(-50%);
 }
@@ -118,5 +136,10 @@ select#type
 {
     display: flex;
     justify-content: center;
-    padding: 10%;
+    padding-inline: 5px;
+    padding-block: 7px;
+    margin-block: 18px;
+    margin-inline: 12px;
+    background-color: var(--fourth-bg-color);
+    border-radius: 4px;
 }

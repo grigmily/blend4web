@@ -15,6 +15,7 @@
     --main-text-color: #fff;
     --secondary-text-color: #8d8d8d;
     --third-text-color: #bdbdbd;
+    --fifth-text-color: #bfbfbf;
     --bg-color: #e5e5e5;
     --button-color: #53cbf1;
 }
@@ -24,8 +25,14 @@ body
     background-color: var(--main-bg-color);
     font-family: 'Lato', sans-serif;
     color: var(--main-text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
+header
+{
+    width: 60%;
+}
 
 .draggable-table
 {
@@ -119,7 +126,6 @@ td
 {
     display: flex;
     justify-content: space-between;
-    width: 100%;
 }
 .header-div h1
 {
@@ -129,11 +135,12 @@ td
 .header-div button
 {
     justify-self: flex-end;
-    color: var(--text-color);
+    color: var(--secondary-text-color);
     background: var(--main-bg-color);
     border: none;
     font-size: 18px;
 }
+
 
 .buttons-window-control
 {
@@ -143,6 +150,7 @@ td
 .create-button
 {
     border: 1px solid #53cbf1;
+    width: 220px;
     border-radius: 30px;
     background: inherit;
     color: inherit;
